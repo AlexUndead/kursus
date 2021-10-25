@@ -2,7 +2,6 @@ from django.db import models
 
 
 class Registration(models.Model):
-    '''Регистрация'''
     STATUS_SUCCESS = 'SUCCESS'
     STATUS_ERROR = 'ERROR'
     STATUSES_CHOICES = (
@@ -11,7 +10,7 @@ class Registration(models.Model):
     )
     created = models.DateTimeField(
         verbose_name='Время и дата создания',
-        auto_now_add=True
+        auto_now_add=True,
     )
     vehicle = models.ForeignKey(
         verbose_name='Транспорт',
@@ -23,6 +22,7 @@ class Registration(models.Model):
     row_number = models.CharField(
         verbose_name='Первоначальный номер',
         max_length=50,
+        blank=True,
     )
     status = models.CharField(
         verbose_name='Статус',
@@ -35,12 +35,19 @@ class Registration(models.Model):
         max_length=250,
     )
 
+    class Meta:
+        verbose_name = 'Регистрация'
+        verbose_name_plural = 'Регистрации'
+        ordering = ('-created',)
+
+    def __str__(self):
+        return f'{self.id} - {self.row_number}'
+
 
 class Vehicle(models.Model):
-    '''Транспорт'''
     number = models.CharField(
         verbose_name='Номер',
-        max_length=10
+        max_length=10,
     )
     category = models.ForeignKey(
         verbose_name='Категория',
@@ -49,10 +56,16 @@ class Vehicle(models.Model):
         on_delete=models.SET_NULL,
         null=True,
     )
+
+    class Meta:
+        verbose_name = 'Транспорт'
+        verbose_name_plural = 'Транспорты'
+
+    def __str__(self):
+        return f'{self.id} - {self.number}'
     
 
 class Category(models.Model):
-    '''Категория'''
     CATEGORY_A = 'А'
     CATEGORY_B = 'В'
     CATEGORY_C = 'С'
@@ -67,3 +80,10 @@ class Category(models.Model):
         choices=CATEGORIES_CHOICES, 
         default=CATEGORY_A,
     )
+
+    class Meta:
+        verbose_name = 'Категория'
+        verbose_name_plural = 'Категории'
+
+    def __str__(self):
+        return f'{self.id} - {self.name}'
